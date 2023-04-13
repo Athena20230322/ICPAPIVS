@@ -28,6 +28,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
         string post2;
         string post3;
         string post4;
+        string post5;
         string aeskeyiv;
         private readonly HttpClient _httpClient = new HttpClient
         {
@@ -219,10 +220,8 @@ namespace ICP.KeyExchange.TestLibrary.Test
             _aesKey = generateAesResult.AES_Key;
             _aesIv = generateAesResult.AES_IV;
         }
-
-        private string callNormalApi(string url, object obj, ref string decryptContent)
+        private string callNormalApi(string url, object obj, ref string decryptContent, string postDataFileName)
         {
-
             string json = JsonConvert.SerializeObject(obj);
 
             _aesCryptoHelper.Key = _aesKey;
@@ -230,183 +229,22 @@ namespace ICP.KeyExchange.TestLibrary.Test
             string encData = _aesCryptoHelper.Encrypt(json);
 
             _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
-           
-            string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
-            
-            string s = _aesClientCertId.ToString();
-
-            string postData1 = $"{s},{signature},{encData}";
-            using (StreamWriter writer = new StreamWriter("postData1.txt"))
-            {
-                writer.WriteLine(postData1);
-            }
-
-            //string a = signature;
-
-            //// post = post + s + ',' + a + ',' + encData + '\n';
-
-            //string post1 = s;
-            //string post2 = a;
-            //string post3 = encData;
-
-            //post 未送出的
-            //using (StreamWriter writer1 = new StreamWriter("post1.txt"))
-            //{
-            //    writer1.WriteLine(post1);
-            //}
-            //using (StreamWriter writer2 = new StreamWriter("post2.txt"))
-            //{
-            //    writer2.WriteLine(post2);
-            //}
-            //using (StreamWriter writer3 = new StreamWriter("post3.txt"))
-            //{
-            //    writer3.WriteLine(post3);
-            //}
-            Console.WriteLine("X-iCP-123");
-            return post;     
-
-        }
-
-        [TestMethod]
-        private string callNormalApi2(string url, object obj, ref string decryptContent)
-        {
-
-            string json = JsonConvert.SerializeObject(obj);
-
-            _aesCryptoHelper.Key = _aesKey;
-            _aesCryptoHelper.Iv = _aesIv;
-            string encData = _aesCryptoHelper.Encrypt(json);
-
-            _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
-        
-            string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
-            
-            string s = _aesClientCertId.ToString();
-            string postData2 = $"{s},{signature},{encData}";
-            using (StreamWriter writer = new StreamWriter("postData2.txt"))
-            {
-                writer.WriteLine(postData2);
-            }
-
-            // string a = signature;
-
-            // post1 = post1 + s + ',' + a + ',' + encData + '\n';
-
-            // string post4 = s;
-            //  string post5 = a;
-            // string post6 = encData;
-
-            //post 未送出的
-            //using (StreamWriter writer4 = new StreamWriter("post4.txt"))
-            // {
-            //    writer4.WriteLine(post4);
-            // }
-            // using (StreamWriter writer5 = new StreamWriter("post5.txt"))
-            // {
-            //     writer5.WriteLine(post5);
-            // }
-            // using (StreamWriter writer6 = new StreamWriter("post6.txt"))
-            // {
-            //    writer6.WriteLine(post6);
-            // }
-            Console.WriteLine("X-iCP-123");
-            return post1;    
-
-        }
-
-        private string callNormalApi3(string url, object obj, ref string decryptContent)
-        {
-
-            string json = JsonConvert.SerializeObject(obj);
-
-            _aesCryptoHelper.Key = _aesKey;
-            _aesCryptoHelper.Iv = _aesIv;
-            string encData = _aesCryptoHelper.Encrypt(json);
-
-            _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
-          
             string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
             string s = _aesClientCertId.ToString();
-            string postData3 = $"{s},{signature},{encData}";
-            using (StreamWriter writer = new StreamWriter("postData3.txt"))
+
+            string postData = $"{s},{signature},{encData}";
+
+            string filePath = Path.Combine("C:\\postData", postDataFileName);
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
-                writer.WriteLine(postData3);
-            }
-
-            //string a = signature;
-
-
-            //string post7 = s;
-            //string post8 = a;
-            //string post9 = encData;
-
-            //post 未送出的
-            //using (StreamWriter writer7 = new StreamWriter("post7.txt"))
-            //{
-            //    writer7.WriteLine(post7);
-            //}
-            //using (StreamWriter writer8 = new StreamWriter("post8.txt"))
-            //{
-            //    writer8.WriteLine(post8);
-            //}
-            //using (StreamWriter writer9 = new StreamWriter("post9.txt"))
-            //{
-            //    writer9.WriteLine(post9);
-            //}
-            Console.WriteLine("X-iCP-123");
-            return post2;
-
+                writer.WriteLine(postData);
             }
 
 
-        private string callNormalApi4(string url, object obj, ref string decryptContent)
-        {
-
-            string json = JsonConvert.SerializeObject(obj);
-
-            _aesCryptoHelper.Key = _aesKey;
-            _aesCryptoHelper.Iv = _aesIv;
-            string encData = _aesCryptoHelper.Encrypt(json);
-
-            _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
-
-            string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
-            string s = _aesClientCertId.ToString();
-            string postData4 = $"{s},{signature},{encData}";
-            using (StreamWriter writer = new StreamWriter("postData4.txt"))
-            {
-                writer.WriteLine(postData4);
-            }
-
-           
-            Console.WriteLine("X-iCP-123");
-            return post3;
+            return post1;
         }
 
 
-        private string callNormalApi5(string url, object obj, ref string decryptContent)
-        {
-
-            string json = JsonConvert.SerializeObject(obj);
-
-            _aesCryptoHelper.Key = _aesKey;
-            _aesCryptoHelper.Iv = _aesIv;
-            string encData = _aesCryptoHelper.Encrypt(json);
-
-            _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
-
-            string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
-            string s = _aesClientCertId.ToString();
-            string postData5 = $"{s},{signature},{encData}";
-            using (StreamWriter writer = new StreamWriter("postData5.txt"))
-            {
-                writer.WriteLine(postData5);
-            }
-
-
-            Console.WriteLine("X-iCP-123");
-            return post4;
-        }
 
 
 
@@ -414,49 +252,49 @@ namespace ICP.KeyExchange.TestLibrary.Test
         {
 
             int ta = 0;
-           
-
-                ////設定讀取的Excel屬性
-                string strCon = "Provider=Microsoft.Jet.OLEDB.4.0;" +
-
-                //路徑(檔案讀取路徑)
-                "Data Source=C:\\Test01S112.xls;" +
-
-                //選擇Excel版本
-                //Excel 12.0 針對Excel 2010、2007版本(OLEDB.12.0)
-                //Excel 8.0 針對Excel 97-2003版本(OLEDB.4.0)
-                //Excel 5.0 針對Excel 97(OLEDB.4.0)
-                "Extended Properties='Excel 8.0;" +
-
-                //開頭是否為資料
-                //若指定值為 Yes，代表 Excel 檔中的工作表第一列是欄位名稱，oleDB直接從第二列讀取
-                //若指定值為 No，代表 Excel 檔中的工作表第一列就是資料了，沒有欄位名稱，oleDB直接從第一列讀取
-                "HDR=NO;" +
-
-                //IMEX=0 為「匯出模式」，能對檔案進行寫入的動作。
-                //IMEX=1 為「匯入模式」，能對檔案進行讀取的動作。
-                //IMEX=2 為「連結模式」，能對檔案進行讀取與寫入的動作。
-                "IMEX=1'";
 
 
+            ////設定讀取的Excel屬性
+            string strCon = "Provider=Microsoft.Jet.OLEDB.4.0;" +
 
-                /*步驟2：依照Excel的屬性及路徑開啟檔案*/
+            //路徑(檔案讀取路徑)
+            "Data Source=C:\\Test01S112.xls;" +
 
-                //Excel路徑及相關資訊匯入
-                OleDbConnection GetXLS = new OleDbConnection(strCon);
+            //選擇Excel版本
+            //Excel 12.0 針對Excel 2010、2007版本(OLEDB.12.0)
+            //Excel 8.0 針對Excel 97-2003版本(OLEDB.4.0)
+            //Excel 5.0 針對Excel 97(OLEDB.4.0)
+            "Extended Properties='Excel 8.0;" +
 
-                //打開檔案
-                GetXLS.Open();
+            //開頭是否為資料
+            //若指定值為 Yes，代表 Excel 檔中的工作表第一列是欄位名稱，oleDB直接從第二列讀取
+            //若指定值為 No，代表 Excel 檔中的工作表第一列就是資料了，沒有欄位名稱，oleDB直接從第一列讀取
+            "HDR=NO;" +
+
+            //IMEX=0 為「匯出模式」，能對檔案進行寫入的動作。
+            //IMEX=1 為「匯入模式」，能對檔案進行讀取的動作。
+            //IMEX=2 為「連結模式」，能對檔案進行讀取與寫入的動作。
+            "IMEX=1'";
 
 
 
-                /*步驟3：搜尋此Excel的所有工作表，找到特定工作表進行讀檔，並將其資料存入List*/
+            /*步驟2：依照Excel的屬性及路徑開啟檔案*/
 
-                //搜尋xls的工作表(工作表名稱需要加$字串)
-                DataTable Table = GetXLS.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+            //Excel路徑及相關資訊匯入
+            OleDbConnection GetXLS = new OleDbConnection(strCon);
 
-                //查詢此Excel所有的工作表名稱
-                string SelectSheetName = "";
+            //打開檔案
+            GetXLS.Open();
+
+
+
+            /*步驟3：搜尋此Excel的所有工作表，找到特定工作表進行讀檔，並將其資料存入List*/
+
+            //搜尋xls的工作表(工作表名稱需要加$字串)
+            DataTable Table = GetXLS.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+            //查詢此Excel所有的工作表名稱
+            string SelectSheetName = "";
             foreach (DataRow row in Table.Rows)
             {
                 //抓取Xls各個Sheet的名稱(+'$')-有的名稱需要加名稱''，有的不用
@@ -484,10 +322,10 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         generateAES();
                         //  string url = "/api/member/MemberInfo/getCellphone";
                         string url = "/app/MemberInfo/UserCodeLogin2022";
-                     
+
                         //工作表SheetA的資料存入List
 
-                
+
 
                         ListSheetA.Add(drSheetA[0].ToString());
                         ListSheetA.Add(drSheetA[1].ToString());
@@ -507,95 +345,110 @@ namespace ICP.KeyExchange.TestLibrary.Test
                             // SMSAuthType = "1"
                         };
                         string decryptContent1 = null;
-                        string response1 = callNormalApi(url, request1, ref decryptContent1);
-                        using (StreamWriter writer = new StreamWriter("important11.txt"))
+                        string response1 = callNormalApi(url, request1, ref decryptContent1, "postData1.txt");
+
+
+
+
+                        var request2 = new
                         {
-                            writer.WriteLine(response1);
-                            writer.Dispose();
-                        }
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                        };
 
-                       // for (int j1 = 0; j1 < 5; j1++)
+                        string decryptContent2 = null;
+                        string response2 = callNormalApi(url, request2, ref decryptContent2, "postData2.txt");
 
+                        var request3 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            PaymentType = "1",
+                            PayID = "11682311000001682"
+                        };
 
-                      //  {
+                        string decryptContent3 = null;
+                        string response3 = callNormalApi(url, request3, ref decryptContent3, "postData3.txt");
 
-
-                            var request2 = new
-                            {
-                                Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                               
-                            };
-
-
-                            string decryptContent2 = null;
-                            string response2 = callNormalApi2(url, request2, ref decryptContent2);
-                            using (StreamWriter writer = new StreamWriter("important22.txt"))
-                            {
-
-                                writer.WriteLine(response2);
-                                writer.Dispose();
-
-
-                            }
-
-                            var request3 = new
-                            {
-                                Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                                PaymentType = "1",
-                                PayID = "11682311000001682"
-
-                            };
-
-
-                            string decryptContent3 = null;
-                            string response3 = callNormalApi3(url, request3, ref decryptContent3);
-
-
-                            using (StreamWriter writer = new StreamWriter("important33.txt"))
-                            {
-                                writer.WriteLine(response3);
-                                writer.Dispose();
-
-                            }
-                      
                         var request4 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             BankInfoType = "1"
-
                         };
 
-
                         string decryptContent4 = null;
-                        string response4 = callNormalApi4(url, request4, ref decryptContent4);
-
-
-                        using (StreamWriter writer = new StreamWriter("important44.txt"))
-                        {
-                            writer.WriteLine(response4);
-                            writer.Dispose();
-
-                        }
+                        string response4 = callNormalApi(url, request4, ref decryptContent4, "postData4.txt");
 
                         var request5 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             BankType = "1",
                             BankCode = "007"
-
                         };
 
-
                         string decryptContent5 = null;
-                        string response5 = callNormalApi5(url, request5, ref decryptContent5);
+                        string response5 = callNormalApi(url, request5, ref decryptContent5, "postData5.txt");
 
 
-                        using (StreamWriter writer = new StreamWriter("important55.txt"))
-                        {
-                            writer.WriteLine(response5);
-                            writer.Dispose();
 
-                        }
+
+                        //var request4 = new
+                        //    {
+                        //        Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                        //        BankInfoType = "1"
+
+                        //    };
+
+
+                        //    string decryptContent4 = null;
+                        //    string response4 = callNormalApi4(url, request4, ref decryptContent4);
+
+
+                        //    using (StreamWriter writer = new StreamWriter("important44.txt"))
+                        //    {
+                        //        writer.WriteLine(response4);
+                        //        writer.Dispose();
+
+                        //    }
+
+                        //    var request5 = new
+                        //    {
+                        //        Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                        //        BankType = "1",
+                        //        BankCode = "007"
+
+                        //    };
+
+
+                        //    string decryptContent5 = null;
+                        //    string response5 = callNormalApi5(url, request5, ref decryptContent5);
+
+
+                        //    using (StreamWriter writer = new StreamWriter("important55.txt"))
+                        //    {
+                        //        writer.WriteLine(response5);
+                        //        writer.Dispose();
+
+                        //    }
+
+
+                        //    var request6 = new
+                        //    {
+                        //        Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+
+
+                        //    };
+
+
+                        //    string decryptContent6 = null;
+                        //    string response6 = callNormalApi6(url, request6, ref decryptContent6);
+
+
+                        //    using (StreamWriter writer = new StreamWriter("important66.txt"))
+                        //    {
+                        //        writer.WriteLine(response5);
+                        //        writer.Dispose();
+
+                        //    }
+
 
                         // Console.WriteLine(j1);
 
