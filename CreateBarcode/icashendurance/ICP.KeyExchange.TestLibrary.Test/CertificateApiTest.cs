@@ -387,6 +387,60 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         string decryptContent5 = null;
                         string response5 = callNormalApi(url, request5, ref decryptContent5, "postData5.txt");
 
+                        var request6 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                         
+                        };
+
+                        string decryptContent6 = null;
+                        string response6 = callNormalApi(url, request6, ref decryptContent6, "postData6.txt");
+
+                        var agreeItems = new[]
+                        {
+                            new { AgreeType = 1, AgreeStatus = 1 },
+                            new { AgreeType = 2, AgreeStatus = 0 },
+                            new { AgreeType = 3, AgreeStatus = 2 },
+                            new { AgreeType = 4, AgreeStatus = 1 }
+                        };
+
+                        var request7 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            AgreeItems = agreeItems
+
+                        };
+
+                        string decryptContent7 = null;
+                        string response7 = callNormalApi(url, request7, ref decryptContent7, "postData7.txt");
+
+
+                        Random random = new Random();
+                        string lettersAndNumbers = "abcdefghijklmnopqrstuvwxyz0123456789";
+                        string randomString = new string(Enumerable.Repeat(lettersAndNumbers, 8)
+                            .Select(s => s[random.Next(s.Length)]).ToArray());
+
+                        var request8 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            NickName = randomString
+                        };
+
+                        string decryptContent8 = null;
+                        string response8 = callNormalApi(url, request8, ref decryptContent8, "postData8.txt");
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
