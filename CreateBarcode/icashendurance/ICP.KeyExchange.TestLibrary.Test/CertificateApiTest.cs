@@ -430,6 +430,17 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         string response8 = callNormalApi(url, request8, ref decryptContent8, "postData8.txt");
 
 
+                        var request9 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            NickName = "^&*()"
+
+                        };
+
+                        string decryptContent9 = null;
+                        string response9 = callNormalApi(url, request9, ref decryptContent9, "postData9.txt");
+
+
 
 
 
