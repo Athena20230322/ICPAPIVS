@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -152,9 +153,13 @@ namespace ICP.KeyExchange.TestLibrary.Test
             {
                 aeskeyiv = aeskeyiv + json + '\n';
                 using (StreamWriter writer = new StreamWriter("keyiv1.txt"))
+
                 {
                     writer.WriteLine(aeskeyiv);
                 }
+                string filePath = "keyiv1.txt";
+                string keyIvData = File.ReadAllText(filePath);
+                Console.WriteLine(keyIvData);
             }
             var generateAesResult = JsonConvert.DeserializeObject<GenerateAesResult>(json);
             _rsaCryptoHelper.ImportPemPublicKey(exchangePucCertResult.Result.ServerPubCert);
@@ -168,8 +173,12 @@ namespace ICP.KeyExchange.TestLibrary.Test
             _aesKey = generateAesResult.AES_Key;
             _aesIv = generateAesResult.AES_IV;
         }
+
+        private string _postDataFileName;
         private string callNormalApi(string url, object obj, ref string decryptContent, string postDataFileName)
+
         {
+            _postDataFileName = postDataFileName; // 設置類級別變量的值
             string json = JsonConvert.SerializeObject(obj);
             _aesCryptoHelper.Key = _aesKey;
             _aesCryptoHelper.Iv = _aesIv;
@@ -275,6 +284,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent4 = null;
                         string response4 = callNormalApi(url, request4, ref decryptContent4, "postData4.txt");
+
                         var request5 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
@@ -283,12 +293,23 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent5 = null;
                         string response5 = callNormalApi(url, request5, ref decryptContent5, "postData5.txt");
+                         
+                        var request51 = new
+                         {
+                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                             BankType = "2",
+                             BankCode = "021"
+                         };
+                        string decryptContent51 = null;
+                        string response51 = callNormalApi(url, request51, ref decryptContent51, "postData5_1.txt");
+
                         var request6 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                         };
                         string decryptContent6 = null;
                         string response6 = callNormalApi(url, request6, ref decryptContent6, "postData6.txt");
+                       
                         var agreeItems = new[]
                         {
                             new { AgreeType = 1, AgreeStatus = 1 },
@@ -338,6 +359,98 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent11 = null;
                         string response11 = callNormalApi(url, request11, ref decryptContent11, "postData11.txt");
+
+                        var request12 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            UserCode = ListSheetA[3],
+                            LoginPwd = "Aa123456",
+                            ConfirmLoginPwd = "Aa123456"
+                        };
+                        string decryptContent12 = null;
+                        string response12 = callNormalApi(url, request12, ref decryptContent12, "postData12.txt");
+
+
+                        var request13 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                           
+                        };
+                        string decryptContent13 = null;
+                        string response13 = callNormalApi(url, request13, ref decryptContent13, "postData13.txt");
+
+
+                        var request14 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent14 = null;
+                        string response14 = callNormalApi(url, request14, ref decryptContent14, "postData14.txt");
+
+
+                        var request15 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent15 = null;
+                        string response15 = callNormalApi(url, request15, ref decryptContent15, "postData15.txt");
+
+
+                        var request16 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent16 = null;
+                        string response16 = callNormalApi(url, request16, ref decryptContent16, "postData16.txt");
+                        // 在需要的地方使用 _postDataFileName 變量
+                        //string filePath = Path.Combine("C:\\postData", _postDataFileName);
+                        //string postData = File.ReadAllText(filePath);
+                        //Console.WriteLine(postData);
+
+
+
+
+
+
+                        var request17 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            CarrierNumber = "1682311000001682"
+                                  
+                        };
+                        string decryptContent17 = null;
+                        string response17 = callNormalApi(url, request17, ref decryptContent17, "postData17.txt");
+
+
+                        var request18 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent18 = null;
+                        string response18 = callNormalApi(url, request18, ref decryptContent18, "postData18.txt");
+
+                        var request19 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent19 = null;
+                        string response19 = callNormalApi(url, request19, ref decryptContent19, "postData19.txt");
+
+
+                        var request20 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            Amount = 50
+
+                        };
+                        string decryptContent20 = null;
+                        string response20 = callNormalApi(url, request20, ref decryptContent20, "postData20.txt");
+
 
 
                         //var request4 = new
