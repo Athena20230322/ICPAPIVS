@@ -62,3 +62,5 @@ C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\obj\Debug\CreateB
 C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\obj\Debug\CreateBarcode.csproj.CopyComplete
 C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\obj\Debug\ConsoleApp1.exe
 C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
+C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\bin\Debug\zh-Hant\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.resources.dll
+C:\IcashPost\ICPAPIVS\CreateBarcode\icashendurance\ConsoleApp1\bin\Debug\zh-Hant\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources.dll

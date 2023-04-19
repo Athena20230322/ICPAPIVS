@@ -272,8 +272,8 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         var request3 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                            PaymentType = "1",
-                            PayID = "11682311000001682"
+                            PaymentType = "2",
+                            PayID = "20090000000021207"
                         };
                         string decryptContent3 = null;
                         string response3 = callNormalApi(url, request3, ref decryptContent3, "postData3.txt");
@@ -418,8 +418,8 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         var request17 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                            CarrierNumber = "1682311000001682"
-                                  
+                            CarrierNumber = "1682211000012808"
+
                         };
                         string decryptContent17 = null;
                         string response17 = callNormalApi(url, request17, ref decryptContent17, "postData17.txt");
@@ -450,6 +450,21 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent20 = null;
                         string response20 = callNormalApi(url, request20, ref decryptContent20, "postData20.txt");
+
+                        var request21 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            BankCode = "009",
+                            BankAccout = "50509500179600",
+                            AccountID = "21207",
+                            Amout = "1",
+                            AgreeLevelUp = false
+
+
+
+                        };
+                        string decryptContent21 = null;
+                        string response21 = callNormalApi(url, request21, ref decryptContent21, "postData21.txt");
 
 
 
