@@ -15,6 +15,8 @@ using System.Data.OleDb;
 using System.Data;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
+
 namespace ICP.KeyExchange.TestLibrary.Test
 {
     [TestClass]
@@ -175,6 +177,9 @@ namespace ICP.KeyExchange.TestLibrary.Test
         }
 
         private string _postDataFileName;
+
+
+
         private string callNormalApi(string url, object obj, ref string decryptContent, string postDataFileName)
 
         {
@@ -193,6 +198,65 @@ namespace ICP.KeyExchange.TestLibrary.Test
                 writer.WriteLine(postData);
             }
             return post1;
+        }
+
+
+        private string callNormalApip(string url, object obj, ref string decryptContent)
+        {
+            string json = JsonConvert.SerializeObject(obj);
+            _aesCryptoHelper.Key = _aesKey;
+            _aesCryptoHelper.Iv = _aesIv;
+            string encData = _aesCryptoHelper.Encrypt(json);
+            _rsaCryptoHelper.ImportPemPrivateKey(_clientPrivateKey);
+            string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
+            IDictionary<string, string> form = new Dictionary<string, string>();
+            form.Add("EncData", encData);
+            var content = new FormUrlEncodedContent(form);
+            content.Headers.Add("X-iCP-EncKeyID", _aesClientCertId.ToString());
+            content.Headers.Add("X-iCP-Signature", signature);
+            string s = _aesClientCertId.ToString();
+            string a = signature;
+            var postResult = _httpClient.PostAsync(url, content).Result;
+            string stringResult = postResult.Content.ReadAsStringAsync().Result;
+            var headerSignature = postResult.Headers.Where(x => x.Key == "X-iCP-Signature").FirstOrDefault();
+            string resultSignature = headerSignature.Value?.FirstOrDefault();
+            _rsaCryptoHelper.ImportPemPublicKey(_serverPublicKey);
+            bool isValid = _rsaCryptoHelper.VerifySignDataWithSha256(stringResult, resultSignature);
+            if (!isValid)
+            {
+                throw new Exception("簽章驗證失敗");
+            }
+            JToken jToken = JToken.Parse(stringResult);
+            if (jToken["RtnCode"].Value<int>() != 1)
+            {
+                throw new Exception(jToken["RtnMsg"].Value<string>());
+            }
+            decryptContent = _aesCryptoHelper.Decrypt(jToken["EncData"].Value<string>());
+            string encryptedData = jToken["EncData"].Value<string>();
+
+            _aesCryptoHelper.Key = _aesKey;
+            _aesCryptoHelper.Iv = _aesIv;
+            string decryptedData = _aesCryptoHelper.Decrypt(encryptedData);
+            decryptContent = decryptedData;
+            Console.WriteLine("16616166");
+            Console.WriteLine(decryptContent);
+
+            // 提取FingerPrintPwd的值
+            int startIndex = decryptedData.IndexOf("\"FingerPrintPwd\":\"") + "\"FingerPrintPwd\":\"".Length;
+            int endIndex = decryptedData.IndexOf(',', startIndex);
+            string FingerPrintPwd = decryptedData.Substring(startIndex, endIndex - startIndex);
+
+            // 输出LoginTokenID的值
+            Console.WriteLine(FingerPrintPwd);
+
+            // 将LoginTokenID写入token.txt文件
+            File.WriteAllText("FingerPrintPwd.txt", FingerPrintPwd);
+
+
+            var jObj = JObject.Parse(decryptContent);
+            string Timestamp = jObj.Value<string>("Timestamp");
+            checkTimestamp(Timestamp);
+            return stringResult;
         }
         public void GetCellphone()
         {
@@ -246,6 +310,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         generateAES();
                         //  string url = "/api/member/MemberInfo/getCellphone";
                         string url = "/app/MemberInfo/UserCodeLogin2022";
+                     
                         //工作表SheetA的資料存入List
                         ListSheetA.Add(drSheetA[0].ToString());
                         ListSheetA.Add(drSheetA[1].ToString());
@@ -255,20 +320,20 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         var request1 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                            //Timestamp = DateTime.Now.ToString("2019/06/20 15:30:00"),
                             LoginType = "1",
                             UserCode = ListSheetA[3],
                             UserPwd = "Aa123456"
-                            // SMSAuthType = "1"
                         };
                         string decryptContent1 = null;
                         string response1 = callNormalApi(url, request1, ref decryptContent1, "postData1.txt");
+
                         var request2 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                         };
                         string decryptContent2 = null;
                         string response2 = callNormalApi(url, request2, ref decryptContent2, "postData2.txt");
+                       
                         var request3 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
@@ -298,7 +363,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                          {
                              Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                              BankType = "2",
-                             BankCode = "021"
+                             BankCode = "048"
                          };
                         string decryptContent51 = null;
                         string response51 = callNormalApi(url, request51, ref decryptContent51, "postData5_1.txt");
@@ -312,9 +377,9 @@ namespace ICP.KeyExchange.TestLibrary.Test
                        
                         var agreeItems = new[]
                         {
-                            new { AgreeType = 1, AgreeStatus = 1 },
-                            new { AgreeType = 2, AgreeStatus = 0 },
-                            new { AgreeType = 3, AgreeStatus = 2 },
+                            //new { AgreeType = 1, AgreeStatus = 1 },
+                            //new { AgreeType = 2, AgreeStatus = 0 },
+                            //new { AgreeType = 3, AgreeStatus = 2 },
                             new { AgreeType = 4, AgreeStatus = 1 }
                         };
                         var request7 = new
@@ -324,6 +389,8 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent7 = null;
                         string response7 = callNormalApi(url, request7, ref decryptContent7, "postData7.txt");
+
+
                         Random random = new Random();
                         string lettersAndNumbers = "abcdefghijklmnopqrstuvwxyz0123456789";
                         string randomString = new string(Enumerable.Repeat(lettersAndNumbers, 8)
@@ -405,20 +472,12 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         };
                         string decryptContent16 = null;
                         string response16 = callNormalApi(url, request16, ref decryptContent16, "postData16.txt");
-                        // 在需要的地方使用 _postDataFileName 變量
-                        //string filePath = Path.Combine("C:\\postData", _postDataFileName);
-                        //string postData = File.ReadAllText(filePath);
-                        //Console.WriteLine(postData);
-
-
-
-
-
 
                         var request17 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                            CarrierNumber = "1682211000012808"
+                            CarrierNumber = "/AAAA",
+                            VerificationCode = "Test1234"
 
                         };
                         string decryptContent17 = null;
@@ -445,7 +504,8 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         var request20 = new
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                            Amount = 50
+                            Amount = 100,
+                            TopUpType = 1
 
                         };
                         string decryptContent20 = null;
@@ -456,15 +516,191 @@ namespace ICP.KeyExchange.TestLibrary.Test
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             BankCode = "009",
                             BankAccout = "50509500179600",
-                            AccountID = "21207",
-                            Amout = "1",
-                            AgreeLevelUp = false
+                            AccountID = 21207,
+                            Amount = 130,
+                            AgreeLevelUp = true
 
 
 
                         };
                         string decryptContent21 = null;
                         string response21 = callNormalApi(url, request21, ref decryptContent21, "postData21.txt");
+
+
+                        var request22 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                           
+
+                        };
+                        string decryptContent22 = null;
+                        string response22 = callNormalApi(url, request22, ref decryptContent22, "postData22.txt");
+
+
+                        var request23 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+
+                        };
+                        string decryptContent23 = null;
+                        string response23 = callNormalApi(url, request23, ref decryptContent23, "postData23.txt");
+
+                        var request24 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            isGetAll = true
+
+
+                        };
+                        string decryptContent24 = null;
+                        string response24 = callNormalApi(url, request24, ref decryptContent24, "postData24.txt");
+
+
+                        var request25 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                        
+
+
+                        };
+                        string decryptContent25 = null;
+                        string response25 = callNormalApi(url, request25, ref decryptContent25, "postData25.txt");
+
+                        var request26 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+
+
+                        };
+                        string decryptContent26 = null;
+                        string response26 = callNormalApi(url, request26, ref decryptContent26, "postData26.txt");
+
+                        var request27 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent27 = null;
+                        string response27 = callNormalApi(url, request27, ref decryptContent27, "postData27.txt");
+
+                        var request28 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+                        };
+                        string decryptContent28 = null;
+                        string response28 = callNormalApi(url, request28, ref decryptContent28, "postData28.txt");
+
+                        var request29 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            CellPhone = "0908009004"
+
+                        };
+                        string decryptContent29 = null;
+                        string response29 = callNormalApi(url, request29, ref decryptContent29, "postData29.txt");
+
+
+                        var request30 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                         
+
+                        };
+                        string decryptContent30 = null;
+                        string response30 = callNormalApi(url, request30, ref decryptContent30, "postData30.txt");
+
+
+
+                        var request31 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+
+
+                        };
+                        string decryptContent31 = null;
+                        string response31 = callNormalApi(url, request31, ref decryptContent31, "postData31.txt");
+
+                        var request32 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            BankCode  = "009",
+                            AccountID = "21207",
+                            Amount = "100"
+
+
+                        };
+                        string decryptContent32 = null;
+                        string response32 = callNormalApi(url, request32, ref decryptContent32, "postData32.txt");
+
+
+                        var request33 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            BankCode = "009",
+                            Amount = "100"
+
+
+                        };
+                        string decryptContent33 = null;
+                        string response33 = callNormalApi(url, request33, ref decryptContent33, "postData33.txt");
+
+
+                        var request34 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            ChangeOpPointSwitch = "N"
+
+
+                        };
+                        string decryptContent34 = null;
+                        string response34 = callNormalApi(url, request34, ref decryptContent34, "postData34.txt");
+
+                        var request35 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            Status = true
+
+
+                        };
+                        string decryptContent35 = null;
+                        string response35 = callNormalApi(url, request35, ref decryptContent35, "postData35.txt");
+
+
+                        var request37 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            MerchantID = "10512932",
+                            Amount = "1",
+                            PayID = "11682211000012808",
+                            Mission ="",
+                            Team_number ="",
+                            MerchantTradeNo = "2023070514204"+DateTime.Now.ToString("yyyy /MM/dd HH:mm:ss"),
+                            StoreID = "Dev2-Test",
+                            StoreName = "Dev2-Test"
+
+
+                        };
+                        string decryptContent37 = null;
+                        string response37 = callNormalApi(url, request37, ref decryptContent37, "postData37.txt");
+
+
+                        var request38 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                      
+
+
+                        };
+                        string decryptContent38 = null;
+                        string response38 = callNormalApi(url, request38, ref decryptContent38, "postData38.txt");
+
+
+
+
+
 
 
 
