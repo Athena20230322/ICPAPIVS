@@ -192,7 +192,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
             string signature = _rsaCryptoHelper.SignDataWithSha256(encData);
             string s = _aesClientCertId.ToString();
             string postData = $"{s},{signature},{encData}";
-            string filePath = Path.Combine("C:\\postData", postDataFileName);
+            string filePath = Path.Combine("C:\\testicashapi\\postData", postDataFileName);
             using (StreamWriter writer = new StreamWriter(filePath))
             {
                 writer.WriteLine(postData);
@@ -338,7 +338,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             PaymentType = "2",
-                            PayID = "20090000000021207"
+                            PayID = "20090000000022427"
                         };
                         string decryptContent3 = null;
                         string response3 = callNormalApi(url, request3, ref decryptContent3, "postData3.txt");
@@ -354,7 +354,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                         {
                             Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             BankType = "1",
-                            BankCode = "007"
+                            BankCode = "009"
                         };
                         string decryptContent5 = null;
                         string response5 = callNormalApi(url, request5, ref decryptContent5, "postData5.txt");
@@ -689,14 +689,28 @@ namespace ICP.KeyExchange.TestLibrary.Test
 
                         var request38 = new
                         {
-                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
-                      
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            MsgID = 0,
+                            Type = 1,
+                            Count = 100
+
 
 
                         };
                         string decryptContent38 = null;
                         string response38 = callNormalApi(url, request38, ref decryptContent38, "postData38.txt");
 
+                        var request39 = new
+                        {
+                            Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                            MerchantTradeNo = "202306210922310000"
+
+
+
+
+                        };
+                        string decryptContent39 = null;
+                        string response39 = callNormalApi(url, request39, ref decryptContent39, "postData39.txt");
 
 
 

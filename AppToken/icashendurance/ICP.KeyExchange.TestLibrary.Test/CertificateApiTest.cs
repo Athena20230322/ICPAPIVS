@@ -396,7 +396,7 @@ namespace ICP.KeyExchange.TestLibrary.Test
                 string strCon = "Provider=Microsoft.Jet.OLEDB.4.0;" +
 
                 //路徑(檔案讀取路徑)
-                "Data Source=C:\\Test01S112.xls;" +
+                "Data Source=C:\\Test01S111.xls;" +
 
                 //選擇Excel版本
                 //Excel 12.0 針對Excel 2010、2007版本(OLEDB.12.0)
@@ -477,11 +477,11 @@ namespace ICP.KeyExchange.TestLibrary.Test
                             {
                              Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                             // Timestamp = DateTime.Now.ToString("2019/08/02 10:45:00"),
-                            CellPhone = "0908009004"
-                           // LoginType = ListSheetA[2],
-                           
-                           //  UserCode = ListSheetA[3],
-                           //  UserPwd = "Aa123456"
+                            CellPhone = "0908009091"
+                            // LoginType = ListSheetA[2],
+
+                            //  UserCode = ListSheetA[3],
+                            //  UserPwd = "Aa123456"
 
                         };
                             string decryptContent1 = null;
